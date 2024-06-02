@@ -1,0 +1,23 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+ipykernel = "*"
+
+[packages]
+sqlalchemy = "*"
+plotly = "*"
+dash = "*"
+flask-login = "*"
+flask-sqlalchemy = "*"
+dash-bootstrap-components = "*"
+pandas = "*"
+numpy = "*"
+openpyxl = "*"
+pydecision = "*"
+colorama = "*"
+
+[requires]
+python_version = "3.9"

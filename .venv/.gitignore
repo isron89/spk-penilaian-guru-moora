@@ -1,0 +1,18 @@
+# Python Flask
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyi
+*.pyz
+*.pyw
+*.pyz/
+*.pyw/
+*.pydevproject
+*.egg-info/
+*.egg-info
+*.egg
+*.whl
+.venv/
+
+.DS_Store

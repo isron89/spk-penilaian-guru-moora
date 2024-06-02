@@ -1,0 +1,2 @@
+[database]
+con = sqlite:////Users/husseinisron/Documents/Project/Majactiv/pythonerika/db/data.db
