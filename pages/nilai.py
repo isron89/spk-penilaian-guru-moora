@@ -149,6 +149,13 @@ def field_val(nm,th):
 )
 def tambah_nilai(nm,th,btn):
     trigger = callback_context.triggered[0]
+    if trigger['prop_id'] == 'tambah-btn-nl.n_clicks':
+        uid = f'u{int(pd.read_sql_query("select uid from profil order by uid desc limit 1", con=engine).values.tolist()[0][0][1:])+1:03d}'
+        return f"Added score {uid}"
+    elif trigger['prop_id'] == 'update-btn-nl.n_clicks':
+        return ""
+    elif trigger['prop_id'] == 'hapus-btn.n_clicks':
+        return ""
     # print(trigger)
     # print([[] for n in range(8)])
     return ""

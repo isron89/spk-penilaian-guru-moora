@@ -11,6 +11,7 @@ from sqlalchemy import text
 from src.config import engine, DEV
 from server import app
 
+from datetime import datetime
 import traceback
 
 def layout():
@@ -128,27 +129,144 @@ def button_below(val,sw):
     [
         Input('nama-opt-kel','value'),
         Input('tambah-btn','n_clicks'),
-        Input('hapus-btn','n_clicks')
+        Input('hapus-btn','n_clicks'),
+        Input('update-btn','n_clicks')
     ] 
     + [Input(f'{n}-field','value') for n in pd.read_sql_query("PRAGMA table_info(profil)", con=engine).name.values if n != 'uid'],
     
 )
-def tambah_nilai(nm,btn1,btn2,b,c,d,e,f,g,h,i,j,k,l,m,n):
+def tambah_nilai(nm,btn1,btn2,btn3,b,c,d,e,f,g,h,i,j,k,l,m,n):
     trigger = callback_context.triggered[0]
     if trigger['prop_id']=='tambah-btn.n_clicks':
         uid = f'u{int(pd.read_sql_query("select uid from profil order by uid desc limit 1", con=engine).values.tolist()[0][0][1:])+1:03d}'
         col_sql = ','.join(pd.read_sql_query("select * from profil order by uid asc limit 1", con=engine).columns.tolist())
         with engine.connect() as conn:
+            g = stringToDatetime(g)
+            i = stringToDatetime(i)
+            j = stringToDatetime(j)
             conn.execute(
                 text(
-                    f"insert into jadwal (\
+                    f"insert into profil (\
                         {col_sql}\
                     ) values (\
-                        {uid},{b},{c},{d},{e},{f},{g},{h},{i},{j},{k},{l},{m},{n}\
+                        '{uid}',{b},'{c}','{d}','{e}','{f}','{g}','{h}','{i}','{j}','{k}','{l}','{m}','{n}'\
                     )"
                 )
             )
+            conn.commit()
         return f"Added user {uid}"
+    elif trigger['prop_id']=='update-btn.n_clicks':
+        col_sql = ','.join(pd.read_sql_query("select * from profil order by uid asc limit 1", con=engine).columns.tolist())
+        with engine.connect() as conn:
+            if b:
+                conn.execute(
+                    text(
+                        f"update profil set \
+                            nip='{b}' \
+                        where uid = '{nm}'"
+                    )
+                )
+            if c:
+                conn.execute(
+                    text(
+                        f"update profil set \
+                            karpeg='{c}' \
+                        where uid = '{nm}'"
+                    )
+                )
+            if d:
+                conn.execute(
+                    text(
+                        f"update profil set \
+                            nuptk='{d}' \
+                        where uid = '{nm}'"
+                    )
+                )
+            if e:
+                conn.execute(
+                    text(
+                        f"update profil set \
+                            nrg='{e}' \
+                        where uid = '{nm}'"
+                    )
+                )
+            if f:
+                conn.execute(
+                    text(
+                        f"update profil set \
+                            nama='{f}' \
+                        where uid = '{nm}'"
+                    )
+                )
+            if g:
+                g = stringToDatetime(g)
+                conn.execute(
+                    text(
+                        f"update profil set \
+                            ttl='{g}' \
+                        where uid = '{nm}'"
+                    )
+                )
+            if h:
+                conn.execute(
+                    text(
+                        f"update profil set \
+                            gol='{h}' \
+                        where uid = '{nm}'"
+                    )
+                )
+            if i:
+                i = stringToDatetime(i)
+                conn.execute(
+                    text(
+                        f"update profil set \
+                            tmt='{i}' \
+                        where uid = '{nm}'"
+                    )
+                )
+            if j:
+                j = stringToDatetime(j)
+                conn.execute(
+                    text(
+                        f"update profil set \
+                            mulai='{j}' \
+                        where uid = '{nm}'"
+                    )
+                )
+            if k:
+                conn.execute(
+                    text(
+                        f"update profil set \
+                            pendidikan='{k}' \
+                        where uid = '{nm}'"
+                    )
+                )
+            if l:
+                conn.execute(
+                    text(
+                        f"update profil set \
+                            gender='{l}' \
+                        where uid = '{nm}'"
+                    )
+                )
+            if m:
+                conn.execute(
+                    text(
+                        f"update profil set \
+                            mata_pelajaran='{m}' \
+                        where uid = '{nm}'"
+                    )
+                )
+            if n:
+                conn.execute(
+                    text(
+                        f"update profil set \
+                            bidang_yang_diampu='{n}' \
+                        where uid = '{nm}'"
+                    )
+                )
+            conn.commit()
+        return f"Updated user {nm}"
     elif trigger['prop_id']=='hapus-btn.n_clicks':
         # query = db.text(f"delete from profil where uid = {nm}")
         query = f"delete from profil where uid= '{nm}'"
@@ -165,3 +283,6 @@ def tambah_nilai(nm,btn1,btn2,b,c,d,e,f,g,h,i,j,k,l,m,n):
             return f"User {nm} not found"
     else:
         return ""
+
+def stringToDatetime(date_string):
+    return datetime.strptime(date_string, '%Y-%m-%d')
