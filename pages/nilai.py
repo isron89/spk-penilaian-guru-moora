@@ -6,8 +6,13 @@ import datetime as dt
 from flask_login import current_user
 import pandas as pd
 
+from sqlalchemy import text
 from src.config import engine
+from datetime import datetime
 from server import app
+
+from sqlalchemy.exc import SQLAlchemyError
+import traceback
 
 def layout():
     nama = pd.read_sql_query("select uid, nama from profil where bidang_yang_diampu != 'Kepala Sekolah' and bidang_yang_diampu is not Null", con=engine)
@@ -143,19 +148,62 @@ def field_val(nm,th):
     [
         Input('nama-opt-nl','value'),
         Input('thn-opt-nl','value'),
-        Input('tambah-btn-nl','n_clicks')
+        Input('tambah-btn-nl','n_clicks'),
+        Input('update-btn-nl','n_clicks'),
+        Input('hapus-btn-nl','n_clicks')
     ] 
-    # + [Input(f"{n[0]}-field","value") for n in pd.read_sql_query("select indikator_id kompetensi from kriteria", con=engine).values.tolist()]
+    # + [Input(f'{n}-field','value') for n in pd.read_sql_query("PRAGMA table_info(nilai)", con=engine).name.values if n != 'pid'],
+    + [Input(f"{n[0]}-field","value") for n in pd.read_sql_query("select indikator_id kompetensi from kriteria", con=engine).values.tolist()]
 )
-def tambah_nilai(nm,th,btn):
+
+def tambah_nilai(nm,th,btn,btn2,btn3,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,aa,bb,cc,dd,ee,ff,gg,hh,ii,jj,kk,ll,mm,nn,oo,pp,qq,rr,ss,tt,uu,vv,ww,xx,yy,zz,aaa,bbb,ccc,ddd,eee,fff,ggg,hhh,iii,jjj,kkk,lll,mmm,nnn,ooo,ppp,qqq,rrr,sss,ttt,uuu,vvv,www,xxx,yyy,zzz):
+# def tambah_nilai(nm,th,btn,list):
     trigger = callback_context.triggered[0]
     if trigger['prop_id'] == 'tambah-btn-nl.n_clicks':
-        uid = f'u{int(pd.read_sql_query("select uid from profil order by uid desc limit 1", con=engine).values.tolist()[0][0][1:])+1:03d}'
-        return f"Added score {uid}"
+        pid = f'p{int(pd.read_sql_query("select uid from nilai order by uid desc limit 1", con=engine).values.tolist()[0][0][1:])+1:03d}'
+        col_sql = ','.join(pd.read_sql_query("select * from nilai order by uid asc limit 1", con=engine).columns.tolist())
+        with engine.connect() as conn:
+            ts = createDateTime()
+            conn.execute(
+                text(
+                    f"insert into nilai (\
+                        {col_sql}\
+                    ) values (\
+                        '{pid}','{nm}','{ts}',{th},{a},{b},{c},{d},{e},{f},{g},{h},{i},{j},{k},{l},{m},{n},{o},{p},{q},{r},{s},{t},{u},{v},{w},{x},{y},{z},{aa},{bb},{cc},{dd},{ee},{ff},{gg},{hh},{ii},{jj},{kk},{ll},{mm},{nn},{oo},{pp},{qq},{rr},{ss},{tt},{uu},{vv},{ww},{xx},{yy},{zz},{aaa},{bbb},{ccc},{ddd},{eee},{fff},{ggg},{hhh},{iii},{jjj},{kkk},{lll},{mmm},{nnn},{ooo},{ppp},{qqq},{rrr},{sss},{ttt},{uuu},{vvv},{www},{xxx},{yyy},{zzz}\
+                    )"
+                )
+            )
+            conn.commit()
+        return f"Added nilai {pid}"
     elif trigger['prop_id'] == 'update-btn-nl.n_clicks':
-        return ""
-    elif trigger['prop_id'] == 'hapus-btn.n_clicks':
-        return ""
-    # print(trigger)
-    # print([[] for n in range(8)])
+        with engine.connect() as conn:
+            ts = createDateTime()
+            conn.execute(
+                text(
+                    f"UPDATE nilai SET tgl_penilaian='{ts}', A01={a}, A02={b}, A03={c}, A04={d}, A05={e}, A06={f}, B01={g}, B02={h}, B03={i}, B04={j}, B05={k}, B06={l}, C01={m}, C02={n}, C03={o}, C04={p}, D01={q}, D02={r}, D03={s}, D04={t}, D05={u}, D06={v}, D07={w}, D08={x}, D09={y}, D10={z}, D11={aa}, E01={bb}, E02={cc}, E03={dd}, E04={ee}, E05={ff}, E06={gg}, E07={hh}, F01={ii}, F02={jj}, F03={kk}, F04={ll}, F05={mm}, F06={nn}, G01={oo}, G02={pp}, G03={qq}, G04={rr}, G05={ss}, H01={tt}, H02={uu}, H03={vv}, H04={ww}, H05={xx}, I01={yy}, I02={zz}, I03={aaa}, I04={bbb}, I05={ccc}, J01={ddd}, J02={eee}, J03={fff}, J04={ggg}, J05={hhh}, J06={iii}, J07={jjj}, J08={kkk}, K01={lll}, K02={mmm}, K03={nnn}, L01={ooo}, L02={ppp}, L03={qqq}, M01={rrr}, M02={sss}, M03={ttt}, N01={uuu}, N02={vvv}, N03={www}, N04={xxx}, N05={yyy}, N06={zzz} WHERE uid='{nm}' and tahun={th};"
+                )
+            )
+            conn.commit()
+        return f"Updated nilai {nm} periode {th}"
+    elif trigger['prop_id'] == 'hapus-btn-nl.n_clicks':
+        query = f"delete from nilai where uid= '{nm}' and tahun= {th}"
+        try :
+            with engine.connect() as conn:
+                conn.execute(
+                    text(query)
+                )
+                conn.commit()
+            return f"Deleted nilai {nm} periode {th}"
+        except SQLAlchemyError as e:
+            print(e)
+            traceback.print_exc()
+            return f"Nilai {nm} not found"
+    print(trigger)
     return ""
+
+def stringToDatetime(date_string):
+    return datetime.strptime(date_string, '%Y-%m-%d')
+
+def createDateTime():
+    times = datetime.now()
+    return times.replace(hour=0, minute=0, second=0, microsecond=0)

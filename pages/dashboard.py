@@ -70,6 +70,7 @@ def layout():
     ]
 )
 def dataview(thn,nm):
+
     df, dx = moora(thn)
 
     df['Peringkat'] = df['Peringkat'].astype(int) + 1
@@ -81,18 +82,14 @@ def dataview(thn,nm):
 
     for x in range(df['Rekomendasi'].size):
         numb = float(df['Skor'].get(x))
-        if abs(numb) >= abs(float(0.24)):
+        if abs(numb) >= abs(float(4)):
             df['Rekomendasi'][x] = 'Naik jabatan'
-        elif abs(numb) < abs(float(0.24)) and abs(numb) >= abs(float(0.22)):
+        elif abs(numb) < abs(float(4)) and abs(numb) >= abs(float(3.5)):
             df['Rekomendasi'][x] = 'Bonus gajian'
-        elif abs(numb) < abs(float(0.22)) and abs(numb) >= abs(float(0.20)):
+        elif abs(numb) < abs(float(3.5)) and abs(numb) >= abs(float(3)):
             df['Rekomendasi'][x] = 'Pengangkatan sebagai wali kelas'
         else:
-            df['Rekomendasi'][x] = 'Penilaian ulang'
-        # elif abs(numb) < abs(float(0.20)) and abs(numb) >= abs(float(0.18)):
-        #     df['Rekomendasi'][x] = 'Penilaian ulang'
-        # else:
-        #     df['Rekomendasi'][x] = '-'
+            df['Rekomendasi'][x] = 'Bimbingan penilaian'
         
     fig = px.line_polar(
         pd.DataFrame(dx.iloc[:,4:].mean()).reset_index().rename(columns={'index':'Kompetensi',0:'Nilai'}), 
