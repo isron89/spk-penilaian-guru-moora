@@ -67,8 +67,8 @@ def layout():
                 dbc.Button("Tambahkan",id="tambah-btn"),
                 align='center', md=5, style={'padding':20}
             )
-        ], align='center',justify='center', style={'text-align':'center'}),
-    ], fluid=True)
+        ], align='center',justify='center', style={'text-align':'center', 'background-color':'#1c59b0cc'}, className="mb-3"),
+    ], style={'background-color':'#1c59b0cc'}, fluid=True)
 
 @app.callback(
     [Output(f'{n}-field','placeholder') for n in pd.read_sql_query("PRAGMA table_info(profil)", con=engine).name.values],

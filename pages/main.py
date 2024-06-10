@@ -52,6 +52,6 @@ def button(url):
         if current_user.username == "kepsek":
             return False, {}
         else:
-            return True, {'backgroundColor':'gray', 'color':'lightgray'}
+            return True, {'backgroundColor':'blue', 'color':'lightblue'}
     except:
         return False, {}

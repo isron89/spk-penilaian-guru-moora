@@ -56,8 +56,8 @@ def layout():
                 ), style={'padding':20}
             )
         ),
-        html.Div(id='dataview', style={'padding':20})
-    ], fluid=True)
+        html.Div(id='dataview', style={'padding':20, 'background-color':'#212121'})
+    ], style={'background-color':'#212121'}, fluid=True)
 
 @app.callback(
     [
@@ -131,8 +131,8 @@ def dataview(thn,nm):
     fig.update_layout(
         template='plotly_dark',
         hovermode="x",
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(21, 89, 176, 0.8)',
+        plot_bgcolor='rgba(21, 89, 176, 0.8)',
         # title='Radar Chart <b>Kompetensi Guru</b>'
         title={
             'text': 'Radar Chart <b>Kompetensi Guru</b>',
@@ -143,9 +143,9 @@ def dataview(thn,nm):
     return html.Div(
         dbc.Row(
             dbc.Table.from_dataframe(
-                df, striped=True, bordered=True, hover=True, index=False, dark=True
+                df, striped=True, bordered=True, hover=True, index=False, dark=True, responsive=True
             )
-        )
+        ), style={'background-color':'#212121'}
     ), html.Div(
         dbc.Row(
             dbc.Col(
@@ -153,5 +153,5 @@ def dataview(thn,nm):
                     figure=fig
                 )
             )
-        ),
+        ), style={'background-color':'#212121'}
     )
